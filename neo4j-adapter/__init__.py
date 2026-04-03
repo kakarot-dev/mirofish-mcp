@@ -26,6 +26,7 @@ from .embedding_service import EmbeddingService, EmbeddingError
 from .search_service import SearchService
 from .ner_extractor import NERExtractor
 from .llm_client import LLMClient, create_llm_client
+from .zep_shim import ZepNeo4jShim
 
 __all__ = [
     "Config",
@@ -37,4 +38,5 @@ __all__ = [
     "NERExtractor",
     "LLMClient",
     "create_llm_client",
+    "ZepNeo4jShim",
 ]
