@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 kakarot-dev
+
 import type { Request, Response, NextFunction } from "express";
 import { timingSafeEqual } from "node:crypto";
 

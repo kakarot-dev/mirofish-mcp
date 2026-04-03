@@ -1,6 +1,10 @@
 mirofish-mcp
 Copyright 2026 kakarot-dev
 
+TRADEMARK NOTICE: "MiroFish" is a trademark of Guo Hangjiang / the MiroFish
+project. mirofish-mcp is an independent, community-developed project and is
+NOT endorsed by, affiliated with, or sponsored by the MiroFish team.
+
 This project incorporates code from the following open-source projects:
 
 ---
@@ -43,3 +47,14 @@ Licensed under MIT
 https://github.com/modelcontextprotocol/typescript-sdk
 
 The MCP TypeScript SDK is used to build the mirofish-mcp server.
+
+---
+
+MiroFish-Offline
+Copyright 2026 nikmcfly
+Licensed under AGPL-3.0
+https://github.com/nikmcfly/MiroFish-Offline
+
+English translations of MiroFish's Chinese prompt strings are ported from
+MiroFish-Offline's localization work (1,000+ strings across 20 files).
+Applied as runtime patches in neo4j-adapter/i18n_patch.py.

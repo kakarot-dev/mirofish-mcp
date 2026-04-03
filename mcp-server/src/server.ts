@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 kakarot-dev
+
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { MirofishClient } from "./client/mirofish-client.js";
 import { registerAllTools } from "./tools/index.js";
