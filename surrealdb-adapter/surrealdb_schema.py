@@ -47,8 +47,7 @@ DEFINE INDEX idx_entity_name     ON entity FIELDS graph_id, name_lower UNIQUE;
 
 DEFINE ANALYZER entity_analyzer TOKENIZERS blank, class FILTERS lowercase, ascii, snowball(english);
 DEFINE INDEX idx_entity_ft ON entity FIELDS name, summary
-    SEARCH ANALYZER entity_analyzer BM25
-    HIGHLIGHTS;
+    SEARCH ANALYZER entity_analyzer BM25;
 
 DEFINE INDEX idx_entity_vec ON entity FIELDS embedding
     HNSW DIMENSION 768
@@ -81,8 +80,7 @@ DEFINE INDEX idx_relation_graph ON relation FIELDS graph_id;
 
 DEFINE ANALYZER relation_analyzer TOKENIZERS blank, class FILTERS lowercase, ascii, snowball(english);
 DEFINE INDEX idx_relation_ft ON relation FIELDS fact, name
-    SEARCH ANALYZER relation_analyzer BM25
-    HIGHLIGHTS;
+    SEARCH ANALYZER relation_analyzer BM25;
 
 DEFINE INDEX idx_relation_vec ON relation FIELDS fact_embedding
     HNSW DIMENSION 768

@@ -67,9 +67,10 @@ class SurrealDBStorage(GraphStorage):
     def connect(self) -> None:
         """Establish SurrealDB connection, authenticate, select ns/db."""
         self._db = Surreal(self._url)
-        self._db.connect()
-        self._db.signin({"user": self._user, "pass": self._password})
+        # v1.0.8: connection is established via __enter__, call it directly
+        self._db.__enter__()
         self._db.use(self._namespace, self._database)
+        self._db.signin({"username": self._user, "password": self._password})
         self._ensure_schema()
         logger.info(
             "Connected to SurrealDB at %s (ns=%s, db=%s)",
