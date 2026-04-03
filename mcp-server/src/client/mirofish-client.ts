@@ -78,7 +78,7 @@ export class MirofishClient {
       enableReddit,
       params,
     ).catch((err) => {
-      process.stderr.write(`mirofish-mcp: background pipeline error: ${err.message}\n`);
+      process.stderr.write(`deepmiro: background pipeline error: ${err.message}\n`);
     });
 
     // Return immediately with project info — user polls via simulation_status

@@ -1,11 +1,11 @@
 {
-  "name": "mirofish-mcp",
+  "name": "deepmiro-mcp",
   "version": "0.1.0",
-  "description": "MCP server for MiroFish swarm simulation platform",
+  "description": "DeepMiro — production-grade MCP server for MiroFish swarm simulations",
   "license": "AGPL-3.0-only",
   "type": "module",
   "bin": {
-    "mirofish-mcp": "./dist/index.js"
+    "deepmiro-mcp": "./dist/index.js"
   },
   "main": "./dist/index.js",
   "scripts": {

@@ -1,8 +1,8 @@
 services:
   surrealdb:
     image: surrealdb/surrealdb:latest
-    container_name: mirofish-surreal
-    command: start --user root --pass ${SURREAL_PASSWORD:-changeme} --bind 0.0.0.0:8000 --log warn -A surrealkv:/data/mirofish.db
+    container_name: deepmiro-surreal
+    command: start --user root --pass ${SURREAL_PASSWORD:-changeme} --bind 0.0.0.0:8000 --log warn -A surrealkv:/data/deepmiro.db
     ports:
       - "8000:8000"
     volumes:
@@ -15,11 +15,11 @@ services:
       timeout: 10s
       retries: 3
 
-  mirofish-backend:
+  deepmiro-backend:
     build:
       context: ../MiroFish
       dockerfile: Dockerfile
-    container_name: mirofish-backend
+    container_name: deepmiro-backend
     environment:
       LLM_API_KEY: ${LLM_API_KEY}
       LLM_BASE_URL: ${LLM_BASE_URL:-https://api.fireworks.ai/inference/v1}
@@ -50,13 +50,13 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
-  mirofish-mcp:
+  deepmiro-mcp:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    container_name: mirofish-mcp
+    container_name: deepmiro-mcp
     environment:
-      MIROFISH_URL: http://mirofish-backend:5001
+      MIROFISH_URL: http://deepmiro-backend:5001
       LLM_API_KEY: ${LLM_API_KEY}
       TRANSPORT: http
       HTTP_PORT: "3001"
@@ -64,7 +64,7 @@ services:
     ports:
       - "3001:3001"
     depends_on:
-      - mirofish-backend
+      - deepmiro-backend
     restart: unless-stopped
 
 volumes:

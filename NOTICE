@@ -1,8 +1,8 @@
-mirofish-mcp
+DeepMiro
 Copyright 2026 kakarot-dev
 
 TRADEMARK NOTICE: "MiroFish" is a trademark of Guo Hangjiang / the MiroFish
-project. mirofish-mcp is an independent, community-developed project and is
+project. DeepMiro is an independent, community-developed project and is
 NOT endorsed by, affiliated with, or sponsored by the MiroFish team.
 
 This project incorporates code from the following open-source projects:
@@ -14,7 +14,7 @@ Copyright 2025-2026 Guo Hangjiang (666ghj)
 Licensed under AGPL-3.0
 https://github.com/666ghj/MiroFish
 
-mirofish-mcp wraps the MiroFish backend as an MCP server. The MiroFish
+DeepMiro wraps the MiroFish backend as an MCP server. The MiroFish
 backend is used as-is and is not modified or redistributed in this repository.
 
 ---
@@ -46,7 +46,7 @@ Copyright 2024-2026 Anthropic
 Licensed under MIT
 https://github.com/modelcontextprotocol/typescript-sdk
 
-The MCP TypeScript SDK is used to build the mirofish-mcp server.
+The MCP TypeScript SDK is used to build the DeepMiro server.
 
 ---
 

@@ -22,7 +22,7 @@ async function main() {
     const { server } = createMcpServer(config);
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    process.stderr.write("mirofish-mcp: stdio transport connected\n");
+    process.stderr.write("deepmiro: stdio transport connected\n");
   }
 }
 
@@ -40,7 +40,7 @@ async function startHttpTransport(config: MirofishConfig) {
     // StreamableHTTPServerTransport manages its own lifecycle,
     // but we add a safety net for orphaned sessions
     if (sessions.size > 100) {
-      process.stderr.write(`mirofish-mcp: warning: ${sessions.size} active sessions\n`);
+      process.stderr.write(`deepmiro: warning: ${sessions.size} active sessions\n`);
     }
   }, 60_000);
 
@@ -108,12 +108,12 @@ async function startHttpTransport(config: MirofishConfig) {
   });
 
   const httpServer = app.listen(config.httpPort, () => {
-    console.log(`mirofish-mcp: HTTP transport listening on port ${config.httpPort}`);
+    console.log(`deepmiro: HTTP transport listening on port ${config.httpPort}`);
   });
 
   // Graceful shutdown (MEDIUM FIX)
   const shutdown = async () => {
-    process.stderr.write("mirofish-mcp: shutting down...\n");
+    process.stderr.write("deepmiro: shutting down...\n");
     for (const [, { transport }] of sessions) {
       await transport.close().catch(() => {});
     }
@@ -127,6 +127,6 @@ async function startHttpTransport(config: MirofishConfig) {
 }
 
 main().catch((err) => {
-  process.stderr.write(`mirofish-mcp fatal: ${err.message}\n`);
+  process.stderr.write(`deepmiro fatal: ${err.message}\n`);
   process.exit(1);
 });

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # Originally from MiroShark (https://github.com/aaronjmars/MiroShark)
 # Copyright 2026 aaronjmars, modifications Copyright 2026 kakarot-dev
-# Modified for mirofish-mcp: standalone config, Fireworks AI defaults
+# Modified for deepmiro: standalone config, Fireworks AI defaults
 
 """
 GraphStorage — abstract interface for graph storage backends.

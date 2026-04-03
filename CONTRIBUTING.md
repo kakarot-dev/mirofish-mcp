@@ -1,4 +1,4 @@
-# Contributing to mirofish-mcp
+# Contributing to DeepMiro
 
 Thanks for your interest in contributing.
 

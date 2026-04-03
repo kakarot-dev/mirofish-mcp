@@ -11,7 +11,7 @@ export function createMcpServer(config: MirofishConfig): {
   client: MirofishClient;
 } {
   const server = new McpServer({
-    name: "mirofish-mcp",
+    name: "deepmiro",
     version: "0.1.0",
   });
 
