@@ -340,17 +340,17 @@ class SurrealDBStorage(GraphStorage):
             )
             self._query(
                 """
-                LET $src = (SELECT id FROM entity
+                LET $src = (SELECT VALUE id FROM entity
                             WHERE graph_id = $gid
                             AND name_lower = $source_lower
                             LIMIT 1);
-                LET $tgt = (SELECT id FROM entity
+                LET $tgt = (SELECT VALUE id FROM entity
                             WHERE graph_id = $gid
                             AND name_lower = $target_lower
                             LIMIT 1);
 
-                IF $src[0] != NONE AND $tgt[0] != NONE {
-                    RELATE $src[0].id -> relation -> $tgt[0].id SET
+                IF array::len($src) > 0 AND array::len($tgt) > 0 {
+                    RELATE $src[0] -> relation -> $tgt[0] SET
                         graph_id = $gid,
                         name = $rel_name,
                         fact = $fact,
