@@ -33,9 +33,12 @@ spec:
       containers:
       - name: backend
         image: {{ .Values.backend.image }}
+        imagePullPolicy: {{ .Values.backend.imagePullPolicy | default "IfNotPresent" }}
         ports:
         - containerPort: {{ .Values.backend.port }}
         env:
+        - name: GRAPH_BACKEND
+          value: surrealdb
         - name: LLM_API_KEY
           valueFrom:
             secretKeyRef:
@@ -54,8 +57,6 @@ spec:
           value: {{ .Values.llm.baseUrl | quote }}
         - name: LLM_BOOST_MODEL_NAME
           value: {{ .Values.llm.boostModelName | quote }}
-        - name: USE_SURREALDB
-          value: "true"
         - name: SURREAL_URL
           value: "ws://{{ include "mirofish.fullname" . }}-surreal:8000"
         - name: SURREAL_NAMESPACE
@@ -86,13 +87,11 @@ spec:
           value: "0.0.0.0"
         - name: FLASK_PORT
           value: {{ .Values.backend.port | quote }}
-        - name: ZEP_API_KEY
-          value: "surreal-mode"
         resources:
           {{- toYaml .Values.backend.resources | nindent 10 }}
         volumeMounts:
         - name: uploads
-          mountPath: /app/MiroFish/backend/uploads
+          mountPath: /app/deepmiro/backend/uploads
         livenessProbe:
           httpGet:
             path: /health
