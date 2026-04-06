@@ -1,95 +1,96 @@
 ---
 name: predict
-description: Run a DeepMiro swarm prediction — multi-agent social media simulation to predict how communities react to events, policies, or announcements. Use when the user says "predict", "simulate", "how will people react", "what would happen if", or wants to model social dynamics.
+description: Run a DeepMiro swarm prediction — multi-agent social media simulation that predicts how communities react to events, policies, or announcements. Use when the user says "predict", "simulate", "how will people react", "what would happen if", or wants to model social dynamics.
 argument-hint: [scenario] [optional-file-path]
 ---
 
 # DeepMiro Predict
 
-Run a multi-agent swarm simulation to predict how online communities
-will react to a scenario.
+Run a multi-agent swarm simulation to predict how online communities react to a scenario. Agents with distinct personas (students, journalists, officials, alumni) interact on simulated Twitter and Reddit, producing realistic social media dynamics.
+
+## Setup Check
+
+Before running, verify the DeepMiro MCP tools are available by checking if `create_simulation` exists. If it fails with an auth error:
+
+> "DeepMiro isn't connected yet. Two options:
+> 1. **Hosted** (recommended): Get an API key at https://deepmiro.org, then set `DEEPMIRO_API_KEY` in your environment
+> 2. **Self-hosted**: Run `docker compose up` from the deepmiro repo and update the plugin's `.mcp.json` to point to your local instance"
 
 ## Arguments
 
 $ARGUMENTS contains the prediction prompt and optionally a file path.
-Parse it to extract:
-- The scenario description (required)
-- An optional file path if the user references a document (PDF, MD, TXT)
 
 ## Workflow
 
-### Step 1: Upload document (if file provided)
+### Step 1: Upload document (if applicable)
 
-If a file path is present in $ARGUMENTS or the user has referenced a file
-in the conversation:
+If the user provided a file path in $ARGUMENTS, or referenced a file earlier in the conversation (PDF, MD, TXT):
 
-1. Call the `upload_document` MCP tool with the file path
+1. Call `upload_document` with the file path
 2. Save the returned `document_id`
+3. Tell the user: "Uploaded your document — I'll use it to seed the knowledge graph."
 
 If no file, skip to Step 2.
 
-### Step 2: Create simulation
+### Step 2: Choose preset
 
-Call the `create_simulation` MCP tool:
-- `prompt`: The scenario description from $ARGUMENTS
+- **"quick"** — 10 agents, 20 rounds. Use when user says "quick", "fast", or "just a rough idea"
+- **"standard"** (default) — 20 agents, 40 rounds. Use for most predictions
+- **"deep"** — 50 agents, 72 rounds. Use when user says "deep", "thorough", "detailed", or provides a long document
+
+If the user uploaded a large PDF, suggest deep: "This is a detailed document — I'll run a deep simulation with more agents for a thorough analysis."
+
+### Step 3: Create simulation
+
+Call `create_simulation`:
+- `prompt`: The scenario from $ARGUMENTS
 - `document_id`: From Step 1 (if applicable)
-- `preset`: "standard" unless the user asks for "quick" or "deep"
+- `preset`: From Step 2
 
-Save the returned `simulation_id`.
+Save the `simulation_id`. Tell the user:
 
-Tell the user: "Started simulation `{simulation_id}`. I'll check progress
-every 30 seconds — you can keep working and I'll update you as it progresses."
+> "Simulation started. I'll narrate what happens as the personas interact. You can keep working — I'll update you as it progresses."
 
-### Step 3: Monitor progress
+### Step 4: Monitor and narrate
 
-Poll `simulation_status` every 30 seconds. On each poll, display a
-natural-language update based on the `phase` field:
+Poll `simulation_status` every 30 seconds. Narrate naturally based on the `phase`:
 
-**building_graph**: "Building knowledge graph... {progress}%"
+**building_graph:**
+> "Building a knowledge graph from your input... extracting entities and relationships."
 
-**generating_profiles**: "Spawning personas: {profiles_generated}/{entities_count}.
-Latest: {recent_profiles}"
+**generating_profiles:**
+> "Creating personas: 24 of 68 ready so far — Li Wei (Student), Prof. Zhang (Faculty), Campus Daily (Media)..."
 
-**simulating**: "Round {current_round}/{total_rounds} — {total_actions} actions.
-{recent_actions summary with agent names and content}"
+**simulating:**
+Narrate the simulation like a story using entity names and action content:
+> "Round 15/40 — 127 interactions so far.
+> Prof. Zhang just tweeted: 'Our research output this semester shows remarkable growth in interdisciplinary collaboration...'
+> Li Wei liked the post. Chongqing Upstream News is discussing the campus food controversy on Reddit."
 
-**completed**: Move to Step 4.
+**completed:**
+Move to Step 5.
 
-When `phase` is `simulating`, narrate what's happening using entity names
-and action content from `recent_actions`. Example:
+If the simulation takes more than 15 minutes, tell the user: "This deep simulation is still running — I'll let you know when it's done. Feel free to keep working."
 
-> Round 15/40 — 127 actions so far. Prof. Zhang just tweeted:
-> "Our research output this semester shows remarkable growth..."
-> Li Wei liked the post. Campus Daily is browsing Reddit.
+### Step 5: Present report
 
-### Step 4: Get report
+Call `get_report` with the simulation_id. Present the full analysis.
 
-Call the `get_report` MCP tool with the simulation_id.
-Present the report to the user.
+Then offer:
+> "The simulation is complete. Want me to:
+> - **Interview a persona** — ask any simulated character about their motivations
+> - **Run a different scenario** — modify the prompt and simulate again
+> - **Search past simulations** — find previous predictions"
 
-Then offer: "Want me to interview any of the simulated personas?
-You can ask them questions about their motivations and reactions."
+### Step 6: Interview (optional)
 
-## Important rules
+If the user wants to interview a persona:
+1. Call `interview_agent` with the simulation_id, agent name/ID, and the user's question
+2. Present the response in character
 
-- ALWAYS use entity/persona names ("Prof. Zhang", "Li Wei") in updates.
-  Never show "Agent_34" or "agent_id: 7".
-- If the simulation takes more than 20 minutes, warn the user and
-  suggest checking back later.
-- If `simulation_status` returns an error, inform the user and suggest
-  retrying.
-- Do NOT use the `files` parameter on `create_simulation` with base64
-  encoding. Always use `upload_document` first, then pass `document_id`.
+## Rules
 
-## Setup
-
-This skill requires the DeepMiro MCP server to be connected.
-
-**Hosted (recommended):**
-1. Sign up at https://deepmiro.org and get your API key
-2. Set `DEEPMIRO_API_KEY` in your environment
-3. The plugin's `.mcp.json` handles the rest
-
-**Self-hosted:**
-1. Run `docker compose up` from the deepmiro repo
-2. Update `.mcp.json` to point to your local instance
+- **Names, not IDs**: Always use entity names ("Prof. Zhang", "Li Wei"). Never show "Agent_34" or "agent_id: 7".
+- **No base64**: Never use the `files` parameter on `create_simulation`. Always `upload_document` first.
+- **Error recovery**: If the simulation fails, offer to retry with a smaller preset or prompt-only (no document).
+- **Quick predict**: If the user just wants a fast opinion without a full simulation, use `quick_predict` instead and mention that a full simulation is available for deeper analysis.
