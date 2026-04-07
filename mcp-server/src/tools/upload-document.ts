@@ -9,7 +9,7 @@ import { toMcpError } from "../errors/index.js";
 const inputSchema = {
   file_path: z
     .string()
-    .describe("Absolute path to the file to upload (PDF, MD, or TXT). Max 10MB."),
+    .describe("Absolute path to the file to upload. Supported: PDF, MD, TXT. Max 10MB. Rejects binary files and unsupported formats."),
 };
 
 export function registerUploadDocument(server: McpServer, client: MirofishClient): void {
@@ -18,8 +18,12 @@ export function registerUploadDocument(server: McpServer, client: MirofishClient
     {
       title: "Upload Document",
       description:
-        "Upload a document for use in simulations. Server-side validation and text extraction. " +
-        "Returns a document_id to pass to create_simulation. Supports PDF, Markdown, and plain text.",
+        "Upload a document for use in simulations. " +
+        "LIMITS: Max 10MB, PDF/MD/TXT only. " +
+        "The server extracts text server-side (PyMuPDF for PDFs). " +
+        "Returns a document_id to pass to create_simulation. " +
+        "NOTE: Only works with local file paths (stdio transport). " +
+        "For remote/hosted mode, the client skill uploads via HTTP instead.",
       inputSchema,
       annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
     },

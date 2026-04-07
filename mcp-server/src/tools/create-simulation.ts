@@ -11,16 +11,7 @@ const inputSchema = {
     .string()
     .min(10)
     .describe("Scenario description. E.g. 'How will crypto twitter react to a new ETH ETF rejection?'"),
-  files: z
-    .array(
-      z.object({
-        name: z.string().describe("Filename (e.g. report.pdf)"),
-        content_base64: z.string().describe("Base64-encoded file content"),
-        mime_type: z.string().describe("MIME type (e.g. application/pdf)"),
-      }),
-    )
-    .optional()
-    .describe("Optional documents to seed the knowledge graph"),
+  // files parameter removed — use upload_document + document_id instead
   preset: z
     .enum(["quick", "standard", "deep"])
     .optional()
@@ -51,15 +42,8 @@ export function registerCreateSimulation(server: McpServer, client: MirofishClie
     },
     async (args) => {
       try {
-        const files = args.files?.map((f) => ({
-          name: f.name,
-          content: Buffer.from(f.content_base64, "base64"),
-          mimeType: f.mime_type,
-        }));
-
         const sim = await client.createSimulation({
           prompt: args.prompt,
-          files,
           documentId: args.document_id,
           preset: args.preset,
           agentCount: args.agent_count,
